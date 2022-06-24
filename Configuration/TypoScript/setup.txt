@@ -1,0 +1,7 @@
+plugin.tx_rmsamsapi {
+    settings {
+        committeePid = 1627
+    }
+}
+
+@import 'EXT:rm_samsapi\Configuration\TypoScript\Keys.typoscript'
