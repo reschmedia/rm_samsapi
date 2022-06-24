@@ -47,10 +47,10 @@ class SamsRepository implements SingletonInterface
         // $this->apiKey = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_rmsamsapi.']['settings.']['apiKey'];
 
         $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $ts_config = $this->configurationManager->getConfiguration(
+        $tsConfig = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
         );
-        $this->settings = $ts_config['plugin.']['tx_rmsamsapi.']['settings.'];
+        $this->settings = $tsConfig['plugin.']['tx_rmsamsapi.']['settings.'];
     }
 
     /**
@@ -64,7 +64,7 @@ class SamsRepository implements SingletonInterface
         $options = [
             'headers' => ['x-api-key' => $this->settings['apiKey']],
         ];
-        $response = $this->requestFactory->request('https://dvv.sams-server.de/api/v2/committees/'.$uuid, 'GET', $options);
+        $response = $this->requestFactory->request('https://dvv.sams-server.de/api/v2/committees/' . $uuid, 'GET', $options);
         $statusCode = $response->getStatusCode();
 
         $committee = json_decode($response->getBody()->getContents());
@@ -102,7 +102,7 @@ class SamsRepository implements SingletonInterface
      */
     public function getLeague(string $uuid): \stdClass
     {   
-        $response = $this->requestFactory->request('https://apihub.sams-server.de/'.$this->settings['token'].'/get/'.$uuid, 'GET');
+        $response = $this->requestFactory->request('https://apihub.sams-server.de/'.$this->settings['token'] . '/get/' . $uuid, 'GET');
         $statusCode = $response->getStatusCode();
 
         $league = json_decode($response->getBody()->getContents());
