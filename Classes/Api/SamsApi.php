@@ -52,7 +52,7 @@ class SamsApi implements SingletonInterface
      */
     public function committee(string $uuid): \stdClass
     {
-        return $this->samsRepository->getCommittee($uuid);
+        return $this->samsRepository->getCommittee($uuid) ? new stdClass();
     }
 
     /**
