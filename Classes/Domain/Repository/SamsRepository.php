@@ -47,10 +47,10 @@ class SamsRepository implements SingletonInterface
         // $this->apiKey = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_rmsamsapi.']['settings.']['apiKey'];
 
         $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $tsConfig = $this->configurationManager->getConfiguration(
+        $ts_config = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
         );
-        $this->settings = $tsConfig['plugin.']['tx_rmsamsapi.']['settings.'];
+        $this->settings = $ts_config['plugin.']['tx_rmsamsapi.']['settings.'];
     }
 
     /**
@@ -69,6 +69,9 @@ class SamsRepository implements SingletonInterface
 
         $committee = json_decode($response->getBody()->getContents());
 
+        if ($committee == null) {
+            $committee = new stdClass();
+        }
         return $committee;
     }
 
@@ -107,6 +110,26 @@ class SamsRepository implements SingletonInterface
 
         $league = json_decode($response->getBody()->getContents());
 
+
+        if ($league == null) {
+            $league = new stdClass();
+        }
         return $league;
+    }
+
+    /**
+     * Finds the given address
+     * 
+     * @return array
+     */
+    public function getLeagues(): array
+    {   
+        $response = $this->requestFactory->request('https://apihub.sams-server.de/'.$this->settings['token'] . '/get/SamsDvv/season');
+        $statusCode = $response->getStatusCode();
+
+        $leagues = json_decode($response->getBody()->getContents());
+        $leagues = $leagues;
+
+        return $leagues;
     }
 }

@@ -52,7 +52,7 @@ class SamsApi implements SingletonInterface
      */
     public function committee(string $uuid): \stdClass
     {
-        return $this->samsRepository->getCommittee($uuid) ? new stdClass();
+        return $this->samsRepository->getCommittee($uuid);
     }
 
     /**
@@ -74,5 +74,15 @@ class SamsApi implements SingletonInterface
     public function league(string $uuid): \stdClass
     {
         return $this->samsRepository->getLeague($uuid);
+    }
+
+    /**
+     * Get league by uuid
+     * 
+     * @return array
+     */
+    public function leagues(): array
+    {
+        return $this->samsRepository->getLeagues();
     }
 }
