@@ -85,4 +85,25 @@ class SamsApi implements SingletonInterface
     {
         return $this->samsRepository->getLeagues();
     }
+
+    /**
+     * Get eventtype by uuid
+     * 
+     * @param string $uuid
+     * @return array
+     */
+    public function events(string $uuid): array
+    {
+        return $this->samsRepository->getEvents($uuid);
+    }
+
+    /**
+     * Get all eventtypes
+     * 
+     * @return array
+     */
+    public function eventtypes(): array
+    {
+        return $this->samsRepository->getEventtypes();
+    }
 }
