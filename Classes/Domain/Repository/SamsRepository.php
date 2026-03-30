@@ -64,11 +64,14 @@ class SamsRepository implements SingletonInterface
         $options = [
             'headers' => ['x-api-key' => $this->settings['apiKey']],
         ];
-        $response = $this->requestFactory->request('https://dvv.sams-server.de/api/v2/committees/'.$uuid, 'GET', $options);
+        $response = $this->requestFactory->request('https://dvv.sams-server.de/api/v2/committees/' . $uuid, 'GET', $options);
         $statusCode = $response->getStatusCode();
 
         $committee = json_decode($response->getBody()->getContents());
 
+        if ($committee == null) {
+            $committee = new stdClass();
+        }
         return $committee;
     }
 
@@ -102,11 +105,82 @@ class SamsRepository implements SingletonInterface
      */
     public function getLeague(string $uuid): \stdClass
     {   
-        $response = $this->requestFactory->request('https://apihub.sams-server.de/'.$this->settings['token'].'/get/'.$uuid, 'GET');
+        $response = $this->requestFactory->request('https://apihub.sams-server.de/'.$this->settings['token'] . '/get/' . $uuid, 'GET');
         $statusCode = $response->getStatusCode();
 
         $league = json_decode($response->getBody()->getContents());
 
+
+        if ($league == null) {
+            $league = new stdClass();
+        }
         return $league;
     }
+
+    /**
+     * Finds the given address
+     * 
+     * @return array
+     */
+    public function getLeagues(): array
+    {   
+        $response = $this->requestFactory->request('https://apihub.sams-server.de/'.$this->settings['token'] . '/get/SamsDvv/season');
+        $statusCode = $response->getStatusCode();
+
+        $leagues = json_decode($response->getBody()->getContents());
+        $leagues = $leagues;
+
+        return $leagues;
+    }
+
+    /**
+     * Finds the given address
+     * 
+     * @param string $uuid
+     * @return array
+     */
+    public function getEvents(string $uuid): array
+    {   
+        $options = [
+            'headers' => ['x-api-key' => $this->settings['apiKey']],
+        ];
+        $response = $this->requestFactory->request('https://dvv.sams-server.de/api/v2/events?size=100', 'GET', $options);
+        $statusCode = $response->getStatusCode();
+
+        $events = [];
+
+        if ($uuid != '') {
+            foreach (json_decode($response->getBody()->getContents())->content as $event) {
+                if ($event->eventTypeUuid == $uuid) {
+                    $events[] = $event;
+                }
+            }
+        } else {
+            $events = json_decode($response->getBody()->getContents())->content;
+        }
+        
+        return $events;
+    }
+
+    /**
+     * Finds the given address
+     * 
+     * @return array
+     */
+    public function getEventtypes(): array
+    {   
+        $options = [
+            'headers' => ['x-api-key' => $this->settings['apiKey']],
+        ];
+        $response = $this->requestFactory->request('https://dvv.sams-server.de/api/v2/eventtypes', 'GET', $options);
+        $statusCode = $response->getStatusCode();
+
+        $eventtypes = json_decode($response->getBody()->getContents());
+        if ($eventtypes->numberOfelements != $eventtypes->totalElements) {
+            # code...
+        }
+
+        return $eventtypes;
+    }
+
 }
